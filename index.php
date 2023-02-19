@@ -1,84 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
+include 'config/session.php';
+include 'config/uuid.php';
+include 'controller/UsuarioController.php';
+include 'controller/LoginController.php';
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
-</head>
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle): bool {
+        if ( is_string($haystack) && is_string($needle) ) {
+            return '' === $needle || false !== strpos($haystack, $needle);
+        } else {
+            return false;
+        }
+    }
+}
 
-<body>
-    <div id="site">
-        <header>
-            <h1>USUÁRIOS</h1>
-            <form class="busca" action="">
-                <i><img src="images/lupa.svg"></i>
-                <input type="text" name="pesquisa" placeholder="Pesquisar...">
-            </form>
-            <figure></figure>
-            <a class="sair" href="login.php">sair</a>
-        </header>
+$caminho = $_REQUEST['rota'] ?? 'usuario.index';
 
-        <ul>
-            <li class="titulo">
-                <div class="texto nome">Nome</div>
-                <div class="texto cpf">CPF</div>
-                <div class="texto email">E-MAIL</div>
-                <div class="texto data">DATA</div>
-                <div class="texto status">STATUS</div>
-                <div class="editar"></div>
-                <div class="deletar"></div>
-            </li>
-            <li class="dado">
-                <div class="texto nome">Nome do usuário</div>
-                <div class="texto cpf">000.000.000-00</div>
-                <div class="texto email">email@dominio.com.br</div>
-                <div class="texto data">10/10/2021</div>
-                <div class="texto status">Ativo</div>
-                <div class="editar"><a href="form.php"><img src="images/editar.svg"></a></div>
-                <div class="deletar"><img src="images/deletar.svg"></div>
-            </li>
-            <li class="dado">
-                <div class="texto nome">Nome do usuário</div>
-                <div class="texto cpf">000.000.000-00</div>
-                <div class="texto email">email@dominio.com.br</div>
-                <div class="texto data">10/10/2021</div>
-                <div class="texto status">Ativo</div>
-                <div class="editar"><a href="form.php"><img src="images/editar.svg"></a></div>
-                <div class="deletar"><img src="images/deletar.svg"></div>
-            </li>
-            <li class="dado">
-                <div class="texto nome">Nome do usuário</div>
-                <div class="texto cpf">000.000.000-00</div>
-                <div class="texto email">email@dominio.com.br</div>
-                <div class="texto data">10/10/2021</div>
-                <div class="texto status">Ativo</div>
-                <div class="editar"><a href="form.php"><img src="images/editar.svg"></a></div>
-                <div class="deletar"><img src="images/deletar.svg"></div>
-            </li>
-            <li class="dado">
-                <div class="texto nome">Nome do usuário</div>
-                <div class="texto cpf">000.000.000-00</div>
-                <div class="texto email">email@dominio.com.br</div>
-                <div class="texto data">10/10/2021</div>
-                <div class="texto status">Ativo</div>
-                <div class="editar"><a href="form.php"><img src="images/editar.svg"></a></div>
-                <div class="deletar"><img src="images/deletar.svg"></div>
-            </li>
-        </ul>
-        <div class="pagina">
-            <p class="resultado">4 resultados</p>
-            <a href="">Anterior</a>
-            <a href="">Próxima</a>
-        </div>
-        <a href="form.php" class="botao_add">Adicionar novo</a>
-    </div>
-</body>
-
-</html>
+switch ($caminho) {
+    case 'usuario.index':
+        return (new UsuarioController)->index();
+        break;
+    case 'usuario.create':
+        return (new UsuarioController)->create();
+        break;
+    case 'usuario.store':
+        return (new UsuarioController)->store($_POST);
+        break;
+    case 'usuario.edit':
+        return (new UsuarioController)->edit($_REQUEST['id']);
+        break;
+    case 'usuario.update':
+        return (new UsuarioController)->update($_REQUEST['id'], $_POST);
+        break;
+    case 'login':
+        return (new LoginController)->showLoginForm();
+        break;
+    case 'authenticate':
+        return (new LoginController)->authenticate($_POST['login'], $_POST['senha']);
+        break;
+    case 'logout':
+        return (new LoginController)->logout();
+        break;
+    
+    default:
+        return (new UsuarioController)->index();
+        break;
+}
+// validarSessao();
